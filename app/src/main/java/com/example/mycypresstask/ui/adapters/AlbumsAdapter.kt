@@ -1,19 +1,13 @@
 package com.example.mycypresstask.ui.adapters
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mycypresstask.databinding.AlbumsRecyclerItemBinding
 import com.example.mycypresstask.model.AlbumsItem
-import com.example.mycypresstask.model.PhotosItem
 
 class AlbumsAdapter : ListAdapter<AlbumsItem, AlbumsAdapter.AlbumsAdapterViewHolder>(DiffCallback()) {
 
@@ -24,9 +18,21 @@ class AlbumsAdapter : ListAdapter<AlbumsItem, AlbumsAdapter.AlbumsAdapterViewHol
 
 
     override fun onBindViewHolder(holder: AlbumsAdapterViewHolder, position: Int) {
-        val item = getItem(position)
-
+//        val item = getItem(position)
+        val item = getItem(position % getActualItemCount()) /* To scroll infinitely */
         holder.bind(item)
+    }
+
+    /*
+    The getItemCount() is used by the recyclerview to determinate how many items there are in the list,
+    and if it returns always MAX_VALUE, the list is pretty much infinite.
+    */
+    private fun getActualItemCount(): Int {
+        return currentList.size
+    }
+
+    override fun getItemCount(): Int {
+        return Integer.MAX_VALUE/2
     }
 
     class AlbumsAdapterViewHolder private constructor(val binding: AlbumsRecyclerItemBinding) :

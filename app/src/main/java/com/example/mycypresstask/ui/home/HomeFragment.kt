@@ -37,8 +37,17 @@ class HomeFragment : Fragment() {
 
     private fun setupRecyclerView() {
         albumAdapter = AlbumsAdapter()
-        binding.rvParent.layoutManager = LinearLayoutManager(requireContext())
+
+        val  linearLayoutManager =   LinearLayoutManager(requireContext())
+        linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
+        binding.rvParent.layoutManager = linearLayoutManager
+//        binding.rvParent.layoutManager =  LinearLayoutManager(requireContext())
+
         binding.rvParent.adapter = albumAdapter
+
+//        val middle = Integer.MAX_VALUE
+//        binding.rvParent.scrollToPosition(middle);
+
     }
 
 
