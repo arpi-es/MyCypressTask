@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-
 class MainRepository @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
     private val localDataSource: MainDatabaseDao
@@ -21,41 +20,36 @@ class MainRepository @Inject constructor(
     private val USERID = 1
 
     suspend fun fetchAllAlbums(): Flow<Result<List<AlbumsItem>>> {
-//        Log.i("THIS", "fetchAllAlbums()")
         return flow {
-            //GetTheCachedData
+            /* GetTheCachedData */
             emit(fetchAllAlbumsCached())
 
-            //Get Data From Api
+            /* Get Data From Api */
             val result = remoteDataSource.fetchAlbums(USERID)
 
-            //Cache to database if response is successful
+            /* Cache to database if response is successful */
             if (result.status == Result.Status.SUCCESS) {
                 result.data?.let { it ->
                     localDataSource.insertAllAlbum(it)
 //                    Log.i("MYTAG", "Inserted ${it.size} Albums from API in DB...")
                 }
             }
+
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
 
-
     private fun fetchAllAlbumsCached(): Result<List<AlbumsItem>> =
-        localDataSource.getAllAlbum().let {
-//            Log.i("THIS", "fetchAllAlbumsCached()")
-            Result.success(it)
-
-        }
+        cachedAlbums().let { Result.success(it) }
 
 
     suspend fun fetchAllPhotos(albumId: Int): Flow<Result<List<PhotosItem>>> {
         return flow {
-            emit(fetchAllPhotosCached(albumId))
-//            emit(Result.loading())
-            val result = remoteDataSource.fetchPhotos(albumId)
 
-            //Cache to database if response is successful
+            emit(fetchAllPhotosCached(albumId))
+
+            val result = remoteDataSource.fetchPhotos(albumId)
+            /* Cache to database if response is successful */
             if (result.status == Result.Status.SUCCESS) {
                 result.data?.let { it ->
                     localDataSource.insertAllPhoto(it)
@@ -68,25 +62,27 @@ class MainRepository @Inject constructor(
     }
 
     private fun fetchAllPhotosCached(albumId: Int): Result<List<PhotosItem>> =
-        localDataSource.getPhotosByID(albumId).let {
-//            Log.i("THIS", "fetchAllPhotosCached()")
-            Result.success(it)
-        }
-
+        cachedPhotosByID(albumId).let { Result.success(it) }
 
 
 
     /* for better performance first get cached data */
-    suspend fun getAllAlbumsCached(): Flow<Result<List<AlbumsItem>>> {
+    suspend fun getCachedAlbums(): Flow<Result<List<AlbumsItem>>> {
         return flow {
             emit(fetchAllAlbumsCached())
         }.flowOn(Dispatchers.IO)
     }
 
-    suspend fun getAllPhotosCached(albumId: Int): Flow<List<PhotosItem>> {
+    suspend fun getCachedPhotos(albumId: Int): Flow<List<PhotosItem>> {
         return flow {
-            emit(localDataSource.getPhotosByID(albumId))
+            emit(cachedPhotosByID(albumId))
         }.flowOn(Dispatchers.IO)
     }
+
+
+
+    private fun cachedAlbums() = localDataSource.getAllAlbum()
+
+    private fun cachedPhotosByID(albumId: Int) = localDataSource.getPhotosByID(albumId)
 
 }

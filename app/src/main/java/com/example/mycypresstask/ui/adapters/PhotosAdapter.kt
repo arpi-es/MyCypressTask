@@ -1,8 +1,10 @@
 package com.example.mycypresstask.ui.adapters
 
 
+import android.R
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -10,10 +12,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mycypresstask.databinding.PhotosRecyclerItemBinding
 import com.example.mycypresstask.model.PhotosItem
 
+
 class PhotosAdapter :
     ListAdapter<PhotosItem, PhotosAdapter.PhotosAdapterViewHolder>(PhotosAdapter.DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotosAdapterViewHolder {
+
         return PhotosAdapterViewHolder.from(parent)
     }
 

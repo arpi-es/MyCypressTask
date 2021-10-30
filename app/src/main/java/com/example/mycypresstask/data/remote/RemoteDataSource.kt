@@ -32,16 +32,12 @@ class RemoteDataSource @Inject constructor(private val apiService: ApiService) {
 
     private suspend fun <T> getResponse(request: suspend () -> Response<T>, defaultErrorMessage: String): Result<T> {
         return try {
-            println("I'm working in thread ${Thread.currentThread().name}")
+//            println("I'm working in thread ${Thread.currentThread().name}")
             val result = request.invoke()
             if (result.isSuccessful) {
                 return Result.success(result.body())
             } else {
-//              val errorResponse = ErrorUtils.parseError(result, retrofit)
-//               Result.error(errorResponse?.status_message ?: defaultErrorMessage, errorResponse)
-//              TODO Handle ERROR MSG
                 Result.error("Error", null)
-
             }
         } catch (e: Throwable) {
             Result.error("Unknown Error", null)
