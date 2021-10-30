@@ -21,17 +21,13 @@ class HomeViewModel @ViewModelInject constructor(private val repository: MainRep
     val albums = _albums
 
     private val _photos = HashMap<Int, List<PhotosItem>>()
-    val hashMapPhotos = MutableLiveData<HashMap<Int, List<PhotosItem>>>()
-
+    val hashMapPhotos = MutableLiveData<HashMap<Int, List<PhotosItem>>>() // To Save PhotoAdapter List
 
     private val compositeDisposable = CompositeDisposable()
 
     init {
-
         getCachedData() // for faster performance first get cached data
-
         fetchAlbums() // Get Data from Api
-
     }
 
     private fun getCachedData() {
@@ -42,14 +38,18 @@ class HomeViewModel @ViewModelInject constructor(private val repository: MainRep
                     list.forEach {
                         repository.getAllPhotosCached(it.id).collect { lstPhotos ->
                                 _photos[it.id] = lstPhotos
-                                hashMapPhotos.postValue(_photos)
+//                                hashMapPhotos.postValue(_photos)
                             }
                         }
                     }
                     hashMapPhotos.postValue(_photos)
                 }
             }
+         fetchAlbums() // Get Data from Api
         }
+
+
+
 
 
 
@@ -81,6 +81,8 @@ class HomeViewModel @ViewModelInject constructor(private val repository: MainRep
         viewModelScope.launch {
             repository.fetchAllAlbums().collect { result ->
                 if (result != _albums.value) { // prevent from multiple call to same data
+
+                    Log.i("MYTAG5", "HEREEE")
                     _albums.value = result
                     if (result.status == Result.Status.SUCCESS) {
                         result.data?.let { list ->
@@ -100,7 +102,6 @@ class HomeViewModel @ViewModelInject constructor(private val repository: MainRep
                 repository.fetchAllPhotos(it.id).collect { result ->
                     result.data?.let { lstPhotos ->
                         _photos[it.id] = lstPhotos
-
                     }
                 }
             }

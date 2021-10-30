@@ -10,22 +10,38 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mycypresstask.databinding.PhotosRecyclerItemBinding
 import com.example.mycypresstask.model.PhotosItem
 
-class PhotosAdapter: ListAdapter<PhotosItem, PhotosAdapter.PhotosAdapterViewHolder>(PhotosAdapter.DiffCallback()) {
+class PhotosAdapter :
+    ListAdapter<PhotosItem, PhotosAdapter.PhotosAdapterViewHolder>(PhotosAdapter.DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotosAdapterViewHolder {
         return PhotosAdapterViewHolder.from(parent)
     }
 
-    override fun onBindViewHolder(holder:PhotosAdapterViewHolder, position: Int) {
-        val item = getItem(position)
+    override fun onBindViewHolder(holder: PhotosAdapterViewHolder, position: Int) {
+//        val item = getItem(position)
+//        holder.bind(item)
+        val pos = if (getActualItemCount() == 0) position else (position % getActualItemCount()) /* To scroll infinitely */
+        val item = getItem(pos)
         holder.bind(item)
+    }
+
+    /*
+    The getItemCount() is used by the recyclerview to determinate how many items there are in the list,
+    and if it returns always MAX_VALUE, the list is pretty much infinite.
+    */
+    private fun getActualItemCount(): Int {
+        return getCurrentList().size
+    }
+
+    override fun getItemCount(): Int {
+        if (getActualItemCount() == 0) return 0
+        return Integer.MAX_VALUE
     }
 
     class PhotosAdapterViewHolder private constructor(val binding: PhotosRecyclerItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: PhotosItem) {
             binding.item = item
-
         }
 
         companion object {

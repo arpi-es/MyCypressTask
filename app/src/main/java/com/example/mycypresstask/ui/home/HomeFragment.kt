@@ -1,7 +1,6 @@
 package com.example.mycypresstask.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,10 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mycypresstask.databinding.FragmentHomeBinding
-import com.example.mycypresstask.model.AlbumsItem
-import com.example.mycypresstask.model.PhotosItem
 import com.example.mycypresstask.ui.adapters.AlbumsAdapter
-import com.example.mycypresstask.utils.Resource.*
 import com.example.mycypresstask.utils.Result
 import com.example.mycypresstask.utils.autoCleared
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,7 +18,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private val viewModel: HomeViewModel by viewModels()
-
     private var binding: FragmentHomeBinding by autoCleared()
     private lateinit var albumAdapter: AlbumsAdapter
 
@@ -44,30 +39,20 @@ class HomeFragment : Fragment() {
     private fun setupRecyclerView() {
         albumAdapter = AlbumsAdapter()
 
-        val linearLayoutManager = LinearLayoutManager(requireContext())
-        linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
-        binding.rvParent.layoutManager = linearLayoutManager
-//        binding.rvParent.layoutManager =  LinearLayoutManager(requireContext())
-
+        binding.rvParent.layoutManager = LinearLayoutManager(requireContext() , LinearLayoutManager.VERTICAL, false)
         binding.rvParent.adapter = albumAdapter
 
-//        val middle = Integer.MAX_VALUE
-//        binding.rvParent.scrollToPosition(middle);
+
 
     }
-
 
     private fun setupObserver() {
         viewModel.albums.observe(viewLifecycleOwner, Observer { result ->
             when (result.status) {
                 Result.Status.SUCCESS -> {
                     result.data?.let { list ->
-
                         albumAdapter.submitList(list)
-                        list.forEach {
 
-
-                        }
                     }
 //                        loading.visibility = View.GONE
                 }
@@ -85,13 +70,11 @@ class HomeFragment : Fragment() {
             }
         })
 
-
         viewModel.hashMapPhotos.observe(viewLifecycleOwner, Observer {
-            albumAdapter.photos = it
-
+            if (albumAdapter.photos != it) {
+                albumAdapter.photos = it
+                albumAdapter.notifyDataSetChanged()
+            }
         })
-
-
-
     }
 }

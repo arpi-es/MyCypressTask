@@ -8,7 +8,6 @@ import com.example.mycypresstask.model.PhotosItem
 import com.example.mycypresstask.utils.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
@@ -22,34 +21,29 @@ class MainRepository @Inject constructor(
     private val USERID = 1
 
     suspend fun fetchAllAlbums(): Flow<Result<List<AlbumsItem>>> {
-        Log.i("THIS", "fetchAllAlbums()")
+//        Log.i("THIS", "fetchAllAlbums()")
         return flow {
-//            //GetTheCachedData
-//            emit(fetchAllAlbumsCached())
+            //GetTheCachedData
+            emit(fetchAllAlbumsCached())
+
             //Get Data From Api
             val result = remoteDataSource.fetchAlbums(USERID)
+
             //Cache to database if response is successful
             if (result.status == Result.Status.SUCCESS) {
                 result.data?.let { it ->
                     localDataSource.insertAllAlbum(it)
-                    Log.i("MYTAG", "Inserted ${it.size} Albums from API in DB...")
+//                    Log.i("MYTAG", "Inserted ${it.size} Albums from API in DB...")
                 }
             }
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
 
-    suspend fun getAllAlbumsCached(): Flow<Result<List<AlbumsItem>>> {
-        return flow {
-            //GetTheAlbums
-            emit(fetchAllAlbumsCached())
-        }.flowOn(Dispatchers.IO)
-    }
-
 
     private fun fetchAllAlbumsCached(): Result<List<AlbumsItem>> =
         localDataSource.getAllAlbum().let {
-            Log.i("THIS", "fetchAllAlbumsCached()")
+//            Log.i("THIS", "fetchAllAlbumsCached()")
             Result.success(it)
 
         }
@@ -65,7 +59,7 @@ class MainRepository @Inject constructor(
             if (result.status == Result.Status.SUCCESS) {
                 result.data?.let { it ->
                     localDataSource.insertAllPhoto(it)
-                    Log.i("MYTAG", "Inserted ${it.size}  PhotosItem  from API in DB...")
+//                    Log.i("MYTAG", "Inserted ${it.size}  PhotosItem  from API in DB...")
                 }
             }
             emit(result)
@@ -75,18 +69,24 @@ class MainRepository @Inject constructor(
 
     private fun fetchAllPhotosCached(albumId: Int): Result<List<PhotosItem>> =
         localDataSource.getPhotosByID(albumId).let {
+//            Log.i("THIS", "fetchAllPhotosCached()")
             Result.success(it)
         }
 
 
-    suspend fun getAllPhotosCached(albumId: Int): Flow<List<PhotosItem>>{
-        return flow { emit( localDataSource.getPhotosByID(albumId) )
+
+
+    /* for better performance first get cached data */
+    suspend fun getAllAlbumsCached(): Flow<Result<List<AlbumsItem>>> {
+        return flow {
+            emit(fetchAllAlbumsCached())
         }.flowOn(Dispatchers.IO)
     }
 
-
-
-
-
+    suspend fun getAllPhotosCached(albumId: Int): Flow<List<PhotosItem>> {
+        return flow {
+            emit(localDataSource.getPhotosByID(albumId))
+        }.flowOn(Dispatchers.IO)
+    }
 
 }

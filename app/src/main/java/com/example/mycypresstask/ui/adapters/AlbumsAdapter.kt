@@ -23,7 +23,7 @@ class AlbumsAdapter : ListAdapter<AlbumsItem, AlbumsAdapter.AlbumsAdapterViewHol
 
     override fun onBindViewHolder(holder: AlbumsAdapterViewHolder, position: Int) {
 //        val item = getItem(position)
-        var pos  = if (getActualItemCount() == 0) {position} else (position % getActualItemCount()) /* To scroll infinitely */
+        val pos  = if (getActualItemCount() == 0) {position} else (position % getActualItemCount()) /* To scroll infinitely */
         val item = getItem(pos)
         holder.bind(item , photos[item.id]?: listOf())
     }
@@ -38,26 +38,22 @@ class AlbumsAdapter : ListAdapter<AlbumsItem, AlbumsAdapter.AlbumsAdapterViewHol
 
     override fun getItemCount(): Int {
         if ( getActualItemCount() == 0 ) return  0
-        return Integer.MAX_VALUE/2
+        return Integer.MAX_VALUE
     }
 
     class AlbumsAdapterViewHolder private constructor(val binding: AlbumsRecyclerItemBinding ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: AlbumsItem, lstPhotos: List<PhotosItem>) {
 
-
             binding.item = item
             val adapter = PhotosAdapter()
             binding.rvChild.layoutManager = LinearLayoutManager( binding.rvChild.context, LinearLayoutManager.HORIZONTAL, false)
             binding.rvChild.adapter = adapter
 
+            binding.rvChild.layoutManager?.scrollToPosition(Integer.MAX_VALUE / 2) // To make it scroll infinity from top too
+            binding.rvChild.invalidate()
 
-            Log.i("MYTAG7", lstPhotos.size.toString())
             adapter.submitList(lstPhotos)
-
-            binding.rvChild.adapter
-
-
         }
 
         companion object {
@@ -67,20 +63,7 @@ class AlbumsAdapter : ListAdapter<AlbumsItem, AlbumsAdapter.AlbumsAdapterViewHol
                 return AlbumsAdapterViewHolder(binding)
             }
         }
-
-
-
     }
-
-//    override fun getItem(position: Int): AlbumsItem {
-//        val a : Int = position % Int.MAX_VALUE
-//        return  getItem((position % Int.MAX_VALUE)
-//    }
-
-//    override fun getItemCount(): Int {
-//        return Int.MAX_VALUE
-//    }
-
 
     private class DiffCallback : DiffUtil.ItemCallback<AlbumsItem>() {
         override fun areItemsTheSame(oldItem: AlbumsItem, newItem: AlbumsItem): Boolean {
@@ -92,7 +75,5 @@ class AlbumsAdapter : ListAdapter<AlbumsItem, AlbumsAdapter.AlbumsAdapterViewHol
             return oldItem == newItem
         }
     }
-
-
 
 }
