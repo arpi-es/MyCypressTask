@@ -1,6 +1,7 @@
 package com.example.mycypresstask.ui.adapters
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -16,10 +17,11 @@ class AlbumsAdapter : ListAdapter<AlbumsItem, AlbumsAdapter.AlbumsAdapterViewHol
         return AlbumsAdapterViewHolder.from(parent)
     }
 
-
     override fun onBindViewHolder(holder: AlbumsAdapterViewHolder, position: Int) {
 //        val item = getItem(position)
-        val item = getItem(position % getActualItemCount()) /* To scroll infinitely */
+
+        var pos  = if (getActualItemCount() == 0) {position} else (position % getActualItemCount()) /* To scroll infinitely */
+        val item = getItem(pos)
         holder.bind(item)
     }
 
@@ -28,10 +30,11 @@ class AlbumsAdapter : ListAdapter<AlbumsItem, AlbumsAdapter.AlbumsAdapterViewHol
     and if it returns always MAX_VALUE, the list is pretty much infinite.
     */
     private fun getActualItemCount(): Int {
-        return currentList.size
+        return getCurrentList().size
     }
 
     override fun getItemCount(): Int {
+        if ( getActualItemCount() == 0 ) return  0
         return Integer.MAX_VALUE/2
     }
 
@@ -40,8 +43,6 @@ class AlbumsAdapter : ListAdapter<AlbumsItem, AlbumsAdapter.AlbumsAdapterViewHol
 
         fun bind(item: AlbumsItem) {
             binding.item = item
-
-
 //            val adapter = PhotosAdapter()
 //            binding.rvChild.layoutManager = LinearLayoutManager(binding.context)
 //            binding.rvChild.adapter = adapter
@@ -68,13 +69,6 @@ class AlbumsAdapter : ListAdapter<AlbumsItem, AlbumsAdapter.AlbumsAdapterViewHol
 //    override fun getItemCount(): Int {
 //        return Int.MAX_VALUE
 //    }
-
-
-
-
-
-
-
 
 
     private class DiffCallback : DiffUtil.ItemCallback<AlbumsItem>() {
