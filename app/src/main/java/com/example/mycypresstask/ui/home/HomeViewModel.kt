@@ -27,8 +27,31 @@ class HomeViewModel @ViewModelInject constructor(private val repository: MainRep
     private val compositeDisposable = CompositeDisposable()
 
     init {
-        fetchAlbums()
+
+        getCachedData() // for faster performance first get cached data
+
+        fetchAlbums() // Get Data from Api
+
     }
+
+    private fun getCachedData() {
+        viewModelScope.launch {
+            repository.getAllAlbumsCached().collect { result ->
+                _albums.value = result
+                result.data?.let { list ->
+                    list.forEach {
+                        repository.getAllPhotosCached(it.id).collect { lstPhotos ->
+                                _photos[it.id] = lstPhotos
+                                hashMapPhotos.postValue(_photos)
+                            }
+                        }
+                    }
+                    hashMapPhotos.postValue(_photos)
+                }
+            }
+        }
+
+
 
 
 //    private fun fetchAlbums() {
@@ -85,10 +108,6 @@ class HomeViewModel @ViewModelInject constructor(private val repository: MainRep
             hashMapPhotos.postValue(_photos)
         }
     }
-
-
-
-
 
 
     override fun onCleared() {
