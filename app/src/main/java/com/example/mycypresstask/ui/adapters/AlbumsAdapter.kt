@@ -5,13 +5,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mycypresstask.databinding.AlbumsRecyclerItemBinding
 import com.example.mycypresstask.model.AlbumsItem
+import com.example.mycypresstask.model.PhotosItem
+
 
 class AlbumsAdapter : ListAdapter<AlbumsItem, AlbumsAdapter.AlbumsAdapterViewHolder>(DiffCallback()) {
 
+    var photos = HashMap<Int, List<PhotosItem>>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlbumsAdapterViewHolder {
         return AlbumsAdapterViewHolder.from(parent)
@@ -19,10 +23,9 @@ class AlbumsAdapter : ListAdapter<AlbumsItem, AlbumsAdapter.AlbumsAdapterViewHol
 
     override fun onBindViewHolder(holder: AlbumsAdapterViewHolder, position: Int) {
 //        val item = getItem(position)
-
         var pos  = if (getActualItemCount() == 0) {position} else (position % getActualItemCount()) /* To scroll infinitely */
         val item = getItem(pos)
-        holder.bind(item)
+        holder.bind(item , photos[item.id]?: listOf())
     }
 
     /*
@@ -38,16 +41,22 @@ class AlbumsAdapter : ListAdapter<AlbumsItem, AlbumsAdapter.AlbumsAdapterViewHol
         return Integer.MAX_VALUE/2
     }
 
-    class AlbumsAdapterViewHolder private constructor(val binding: AlbumsRecyclerItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    class AlbumsAdapterViewHolder private constructor(val binding: AlbumsRecyclerItemBinding ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: AlbumsItem) {
+        fun bind(item: AlbumsItem, lstPhotos: List<PhotosItem>) {
+
+
             binding.item = item
-//            val adapter = PhotosAdapter()
-//            binding.rvChild.layoutManager = LinearLayoutManager(binding.context)
-//            binding.rvChild.adapter = adapter
-//            lstChildRecyclerView.
-//            lstChildRecyclerView
+            val adapter = PhotosAdapter()
+            binding.rvChild.layoutManager = LinearLayoutManager( binding.rvChild.context, LinearLayoutManager.HORIZONTAL, false)
+            binding.rvChild.adapter = adapter
+
+
+            Log.i("MYTAG7", lstPhotos.size.toString())
+            adapter.submitList(lstPhotos)
+
+            binding.rvChild.adapter
+
 
         }
 
@@ -58,6 +67,8 @@ class AlbumsAdapter : ListAdapter<AlbumsItem, AlbumsAdapter.AlbumsAdapterViewHol
                 return AlbumsAdapterViewHolder(binding)
             }
         }
+
+
 
     }
 
@@ -81,5 +92,7 @@ class AlbumsAdapter : ListAdapter<AlbumsItem, AlbumsAdapter.AlbumsAdapterViewHol
             return oldItem == newItem
         }
     }
+
+
 
 }

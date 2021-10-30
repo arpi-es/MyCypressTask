@@ -10,6 +10,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mycypresstask.databinding.FragmentHomeBinding
+import com.example.mycypresstask.model.AlbumsItem
+import com.example.mycypresstask.model.PhotosItem
 import com.example.mycypresstask.ui.adapters.AlbumsAdapter
 import com.example.mycypresstask.utils.Resource.*
 import com.example.mycypresstask.utils.Result
@@ -24,7 +26,11 @@ class HomeFragment : Fragment() {
     private var binding: FragmentHomeBinding by autoCleared()
     private lateinit var albumAdapter: AlbumsAdapter
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -38,7 +44,7 @@ class HomeFragment : Fragment() {
     private fun setupRecyclerView() {
         albumAdapter = AlbumsAdapter()
 
-        val  linearLayoutManager =   LinearLayoutManager(requireContext())
+        val linearLayoutManager = LinearLayoutManager(requireContext())
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         binding.rvParent.layoutManager = linearLayoutManager
 //        binding.rvParent.layoutManager =  LinearLayoutManager(requireContext())
@@ -56,9 +62,10 @@ class HomeFragment : Fragment() {
             when (result.status) {
                 Result.Status.SUCCESS -> {
                     result.data?.let { list ->
-                        Log.i("MYTAG", list.toString())
+
                         albumAdapter.submitList(list)
                         list.forEach {
+
 
                         }
                     }
@@ -77,5 +84,14 @@ class HomeFragment : Fragment() {
                 }
             }
         })
+
+
+        viewModel.hashMapPhotos.observe(viewLifecycleOwner, Observer {
+            albumAdapter.photos = it
+
+        })
+
+
+
     }
 }
