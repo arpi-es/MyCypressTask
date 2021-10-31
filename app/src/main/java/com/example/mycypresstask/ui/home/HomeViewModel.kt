@@ -22,6 +22,7 @@ class HomeViewModel @ViewModelInject constructor(private val repository: MainRep
     private val _photos = HashMap<Int, List<PhotosItem>>()
     val hashMapPhotos = MutableLiveData<HashMap<Int, List<PhotosItem>>>() //Save PhotoAdapter Lists [Key:AlbumsItem.ID Value: List<PhotosItem>]
 
+
     private val compositeDisposable = CompositeDisposable()
 
     init {

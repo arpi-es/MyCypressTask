@@ -6,13 +6,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
-        <import type="android.view.View" />
-
         <variable
             name="item"
             type="com.example.mycypresstask.model.AlbumsItem" />
-
     </data>
 
     <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -51,6 +47,13 @@
 
                 />
         </LinearLayout>
+
+
+        <ProgressBar
+            android:id="@+id/loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
 
     </androidx.cardview.widget.CardView>
 

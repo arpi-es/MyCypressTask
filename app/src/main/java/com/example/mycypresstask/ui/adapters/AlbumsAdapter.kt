@@ -3,6 +3,7 @@ package com.example.mycypresstask.ui.adapters
 import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -52,6 +53,8 @@ class AlbumsAdapter : ListAdapter<AlbumsItem, AlbumsAdapter.AlbumsAdapterViewHol
 
             binding.rvChild.layoutManager?.scrollToPosition(Integer.MAX_VALUE / 2) // To make it scroll infinity from top too
             binding.rvChild.invalidate()
+
+            binding.loading.visibility = if (lstPhotos.isEmpty()) View.VISIBLE else  View.GONE
 
             adapter.submitList(lstPhotos)
         }

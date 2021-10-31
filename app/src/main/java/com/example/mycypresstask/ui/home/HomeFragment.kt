@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -41,9 +42,6 @@ class HomeFragment : Fragment() {
 
         binding.rvParent.layoutManager = LinearLayoutManager(requireContext() , LinearLayoutManager.VERTICAL, false)
         binding.rvParent.adapter = albumAdapter
-
-
-
     }
 
     private fun setupObserver() {
@@ -52,23 +50,23 @@ class HomeFragment : Fragment() {
                 Result.Status.SUCCESS -> {
                     result.data?.let { list ->
                         albumAdapter.submitList(list)
-
                     }
-//                        loading.visibility = View.GONE
+
+                    binding.loading.visibility = View.GONE
                 }
 
                 Result.Status.ERROR -> {
-                    result.message?.let {
-//                            showError(it)
-                    }
-//                        loading.visibility = View.GONE
+//                    result.message?.let { Toast.makeText(context, it, Toast.LENGTH_LONG).show() } //
+                    binding.loading.visibility = View.GONE
                 }
 
                 Result.Status.LOADING -> {
-//                        loading.visibility = View.VISIBLE
+                    binding.loading.visibility = View.VISIBLE
                 }
             }
         })
+
+
 
         viewModel.hashMapPhotos.observe(viewLifecycleOwner, Observer {
             if (albumAdapter.photos != it) {
