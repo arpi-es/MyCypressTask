@@ -13,13 +13,18 @@ import com.example.mycypresstask.ui.adapters.AlbumsAdapter
 import com.example.mycypresstask.utils.Result
 import com.example.mycypresstask.utils.autoCleared
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private val viewModel: HomeViewModel by viewModels()
     private var binding: FragmentHomeBinding by autoCleared()
-    private lateinit var albumAdapter: AlbumsAdapter
+
+
+    @Inject
+    lateinit var albumAdapter: AlbumsAdapter
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,7 +42,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        albumAdapter = AlbumsAdapter()
 
         binding.rvParent.layoutManager = LinearLayoutManager(requireContext() , LinearLayoutManager.VERTICAL, false)
         binding.rvParent.adapter = albumAdapter

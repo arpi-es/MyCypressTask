@@ -1,7 +1,6 @@
 package com.example.mycypresstask.ui.adapters
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,7 +25,8 @@ class AlbumsAdapter : ListAdapter<AlbumsItem, AlbumsAdapter.AlbumsAdapterViewHol
 //        val item = getItem(position)
         val pos  = if (getActualItemCount() == 0) {position} else (position % getActualItemCount()) /* To scroll infinitely */
         val item = getItem(pos)
-        holder.bind(item , photos[item.id]?: listOf())
+
+        holder.bind(item , photos[item.id]?: listOf())  // passing a list of photosItem with item
     }
 
     /*
@@ -54,7 +54,7 @@ class AlbumsAdapter : ListAdapter<AlbumsItem, AlbumsAdapter.AlbumsAdapterViewHol
             binding.rvChild.layoutManager?.scrollToPosition(Integer.MAX_VALUE / 2) // To make it scroll infinity from top too
             binding.rvChild.invalidate()
 
-            binding.loading.visibility = if (lstPhotos.isEmpty()) View.VISIBLE else  View.GONE
+            binding.loading.visibility = if (lstPhotos.isEmpty()) View.VISIBLE else  View.GONE // assuming if its empty, means the data has not been fetched
 
             adapter.submitList(lstPhotos)
         }

@@ -7,6 +7,7 @@ import com.example.mycypresstask.data.local.MainDatabaseDao
 import com.example.mycypresstask.data.remote.ApiService
 import com.example.mycypresstask.data.remote.RemoteDataSource
 import com.example.mycypresstask.data.repository.MainRepository
+import com.example.mycypresstask.ui.adapters.AlbumsAdapter
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -33,7 +34,6 @@ object AppModule {
     fun provideRetrofit(gson: Gson): Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create(gson))
-//        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .build()
 
 
@@ -67,5 +67,10 @@ object AppModule {
     fun provideRepository(remoteDataSource: RemoteDataSource, localDataSource: MainDatabaseDao) =
                            MainRepository(remoteDataSource, localDataSource)
 
+
+
+    @Singleton
+    @Provides
+    fun provideAlbumAdapter() = AlbumsAdapter()
 
 }
