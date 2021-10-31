@@ -16,3 +16,7 @@ This app fetches data from Api, Saves cache & shows the list of photos Grouped b
 - Infinity Scroll
 - Nested RecyclerView
 
+<p align="center">
+<img src="/screenshot.png"/>
+</p>
+
