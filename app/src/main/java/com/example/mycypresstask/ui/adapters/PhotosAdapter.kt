@@ -1,10 +1,8 @@
 package com.example.mycypresstask.ui.adapters
 
 
-import android.R
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter

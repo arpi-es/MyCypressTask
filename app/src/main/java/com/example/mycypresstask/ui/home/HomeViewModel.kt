@@ -8,7 +8,6 @@ import com.example.mycypresstask.data.repository.MainRepository
 import com.example.mycypresstask.model.AlbumsItem
 import com.example.mycypresstask.model.PhotosItem
 import com.example.mycypresstask.utils.Result
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -22,9 +21,6 @@ class HomeViewModel @ViewModelInject constructor(private val repository: MainRep
     private val _photos = HashMap<Int, List<PhotosItem>>()
     val hashMapPhotos = MutableLiveData<HashMap<Int, List<PhotosItem>>>() //Save PhotoAdapter Lists [Key:AlbumsItem.ID Value: List<PhotosItem>]
 
-
-    private val compositeDisposable = CompositeDisposable()
-
     init {
         getCachedData() // for faster performance first get cached data. Can Be commented.
         fetchAlbums() // Get Data from Api
@@ -32,7 +28,7 @@ class HomeViewModel @ViewModelInject constructor(private val repository: MainRep
 
     private fun getCachedData() {
         viewModelScope.launch {
-            repository.getCachedAlbums().collect { result ->
+             repository.getCachedAlbums().collect { result ->
                 _albums.value = result
                 result.data?.let { list ->
                     list.forEach {
@@ -41,7 +37,9 @@ class HomeViewModel @ViewModelInject constructor(private val repository: MainRep
                     }
                     hashMapPhotos.postValue(_photos)
                 }
+
             }
+
         }
 
     private fun fetchAlbums() {
@@ -73,9 +71,5 @@ class HomeViewModel @ViewModelInject constructor(private val repository: MainRep
     }
 
 
-    override fun onCleared() {
-        super.onCleared()
-        compositeDisposable.dispose()
-    }
 
 }

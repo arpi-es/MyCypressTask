@@ -4,8 +4,6 @@ import com.example.mycypresstask.model.AlbumsItem
 import com.example.mycypresstask.model.PhotosItem
 import com.example.mycypresstask.utils.Result
 import retrofit2.Response
-import retrofit2.Retrofit
-import java.io.IOException
 import javax.inject.Inject
 
 

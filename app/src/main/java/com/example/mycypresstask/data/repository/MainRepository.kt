@@ -1,6 +1,5 @@
 package com.example.mycypresstask.data.repository
 
-import android.util.Log
 import com.example.mycypresstask.data.local.MainDatabaseDao
 import com.example.mycypresstask.data.remote.RemoteDataSource
 import com.example.mycypresstask.model.AlbumsItem
